@@ -1,0 +1,1231 @@
+﻿<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ladeKompass – Dein EV-Ladekompass.</title>
+  <meta name="description" content="ladeKompass zeigt dir in Echtzeit die nächste freie Ladestation – mit Live-Verfügbarkeit, smarter Routenplanung und Filteroptionen für jeden Steckertyp. DSGVO-konform, entwickelt in Deutschland.">
+  <meta name="theme-color" content="#070b14">
+  <meta property="og:title" content="ladeKompass – Dein EV-Ladekompass.">
+  <meta property="og:description" content="Echtzeit-Stationssuche, Routenplanung mit Ladestopps, Live-Verfügbarkeit – alles in einer App.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg:          #f8fafc;
+      --color-bg-alt:      #f1f5f9;
+      --color-surface:     #ffffff;
+      --color-accent:      #6366f1;
+      --color-accent-dim:  #4f46e5;
+      --color-text-main:   #0f172a;
+      --color-muted:       #475569;
+      --color-faint:       #94a3b8;
+      --color-dark-bg:     #070b14;
+      --font-sans:    'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Outfit', sans-serif;
+    }
+    body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text-main); }
+    h1, h2, h3, h4, .font-display { font-family: var(--font-display); }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="overflow-x-hidden antialiased">
+
+  <!-- ═══ NAVBAR ═══════════════════════════════════════════════ -->
+  <header id="nav" class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300 py-4">
+    <div class="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-900/40">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <span class="text-xl font-black tracking-tight text-white font-display">ladeKompass</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-1 bg-white/6 backdrop-blur border border-white/10 rounded-full px-2 py-1.5">
+        <a href="#features" class="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5" data-de="Features" data-en="Features">Features</a>
+        <a href="#how" class="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5" data-de="Wie es funktioniert" data-en="How it works">Wie es funktioniert</a>
+        <a href="#showcase" class="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5" data-de="App ansehen" data-en="See the App">App ansehen</a>
+        <a href="#roi" class="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5" data-de="Reichweite" data-en="Range">Reichweite</a>
+        <a href="#pricing" class="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5" data-de="Preise" data-en="Pricing">Preise</a>
+      </nav>
+
+      <!-- Right side: Lang + CTA + mobile menu -->
+      <div class="flex items-center gap-3">
+        <!-- Language Toggle -->
+        <div class="lang-toggle hidden md:flex">
+          <button id="lang-de" class="lang-btn active-lang" aria-label="Deutsch">DE</button>
+          <button id="lang-en" class="lang-btn" aria-label="English">EN</button>
+        </div>
+
+        <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="hidden md:inline-flex items-center bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-lg shadow-indigo-900/40 active:scale-95" data-de="App öffnen" data-en="Open app">App öffnen</a>
+
+        <!-- Mobile hamburger -->
+        <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2" aria-expanded="false" aria-label="Menü">
+          <span class="w-5 h-0.5 bg-white/70 rounded"></span>
+          <span class="w-5 h-0.5 bg-white/70 rounded"></span>
+          <span class="w-5 h-0.5 bg-white/70 rounded"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Dropdown -->
+    <div id="mobile-nav" class="hidden md:hidden mt-2 mx-4 bg-slate-900/95 backdrop-blur border border-white/10 rounded-2xl p-4">
+      <div class="flex flex-col gap-1">
+        <a href="#features" class="px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors" data-de="Features" data-en="Features">Features</a>
+        <a href="#how" class="px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors" data-de="Wie es funktioniert" data-en="How it works">Wie es funktioniert</a>
+        <a href="#showcase" class="px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors" data-de="App ansehen" data-en="See the App">App ansehen</a>
+        <a href="#roi" class="px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors" data-de="Reichweite" data-en="Range">Reichweite</a>
+        <a href="#pricing" class="px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors" data-de="Preise" data-en="Pricing">Preise</a>
+        <hr class="border-white/10 my-2">
+        <div class="lang-toggle mx-4 mb-2 w-fit">
+          <button id="lang-de-m" class="lang-btn active-lang" aria-label="Deutsch">DE</button>
+          <button id="lang-en-m" class="lang-btn" aria-label="English">EN</button>
+        </div>
+        <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="bg-indigo-600 text-white px-4 py-3 rounded-xl font-semibold text-sm text-center transition-all" data-de="App öffnen" data-en="Open app">App öffnen</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ══════════════════════════════════════════════════ -->
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden" style="background:#070b14;">
+    <!-- Glow Orbs -->
+    <div class="orb w-[600px] h-[600px] bg-indigo-600/25 -top-32 -left-32"></div>
+    <div class="orb w-[500px] h-[500px] bg-violet-600/15 bottom-0 right-0" style="animation-delay:3s;"></div>
+
+    <div class="max-w-7xl mx-auto px-5 pt-28 pb-20 w-full">
+      <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+
+        <!-- Left: Text -->
+        <div class="flex-1 text-center lg:text-left">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-full mb-8 reveal">
+            <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-ping"></span>
+            <span class="text-indigo-300 text-xs font-bold uppercase tracking-widest" data-de="Neu: Echtzeit-Verfügbarkeit &amp; Routenplanung" data-en="New: Real-time availability &amp; route planning">Neu: Echtzeit-Verfügbarkeit &amp; Routenplanung</span>
+          </div>
+
+          <h1 class="text-5xl md:text-6xl xl:text-7xl font-black text-white mb-6 tracking-tight font-display leading-[1.05] reveal">
+            <span data-de="Laden." data-en="EV Charging.">Laden.</span><br>
+            <span class="gradient-text" data-de="Endlich einfach." data-en="Finally easy.">Endlich einfach.</span>
+          </h1>
+
+          <p class="text-lg text-white/50 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 reveal" data-de="ladeKompass zeigt dir in Echtzeit die nächste freie Ladestation – mit Live-Verfügbarkeit, smarter Routenplanung und Filteroptionen für jeden Steckertyp. Kein Raten. Kein Umweg." data-en="ladeKompass shows you the nearest free charging station in real time – with live availability, smart route planning and filter options for every plug type. No guessing. No detour.">
+            ladeKompass zeigt dir in Echtzeit die nächste freie Ladestation – mit Live-Verfügbarkeit, smarter Routenplanung und Filteroptionen für jeden Steckertyp. Kein Raten. Kein Umweg.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 justify-center lg:justify-start reveal">
+            <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-7 py-4 rounded-2xl font-bold text-base transition-all shadow-xl shadow-indigo-900/40 active:scale-95">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span data-de="App öffnen" data-en="Open app">App öffnen</span>
+            </a>
+            <a href="#showcase" class="inline-flex items-center gap-2 border border-white/15 hover:border-white/30 text-white/75 hover:text-white px-7 py-4 rounded-2xl font-bold text-base transition-all">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <span data-de="App ansehen" data-en="See the app">App ansehen</span>
+            </a>
+          </div>
+
+          <!-- Trust indicators -->
+          <div class="mt-10 flex flex-wrap items-center gap-5 justify-center lg:justify-start reveal">
+            <div class="flex items-center gap-2 text-white/35 text-xs font-medium">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span data-de="DSGVO-konform" data-en="GDPR compliant">DSGVO-konform</span>
+            </div>
+            <div class="flex items-center gap-2 text-white/35 text-xs font-medium">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+              <span data-de="Entwickelt in Deutschland" data-en="Made in Germany">Entwickelt in Deutschland</span>
+            </div>
+            <div class="flex items-center gap-2 text-white/35 text-xs font-medium">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span data-de="Kostenlos nutzbar" data-en="Free to use">Kostenlos nutzbar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: iPhone 15 Pro Titanium -->
+        <div class="flex-shrink-0 reveal flex flex-col items-center gap-6">
+          <div class="iphone-frame">
+            <div class="iphone-inner">
+              <div class="iphone-island"></div>
+              <div class="iphone-screen">
+
+                <!-- Screen 1: Dashboard -->
+                <div class="app-screen active screen-dashboard">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="screen-logo">ladeKompass</span>
+                    <div class="screen-avatar"></div>
+                  </div>
+                  <div class="kpi-grid">
+                    <div class="kpi-card">
+                      <div class="kpi-label">In der Nähe</div>
+                      <div class="kpi-value kpi-amber">12</div>
+                    </div>
+                    <div class="kpi-card">
+                      <div class="kpi-label">Frei</div>
+                      <div class="kpi-value kpi-green">8</div>
+                    </div>
+                    <div class="kpi-card">
+                      <div class="kpi-label">Besetzt</div>
+                      <div class="kpi-value kpi-blue">3</div>
+                    </div>
+                    <div class="kpi-card">
+                      <div class="kpi-label">Favoriten</div>
+                      <div class="kpi-value" style="color:#fff;">5</div>
+                    </div>
+                  </div>
+                  <div style="font-size:7px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:4px 0 3px;">Ladestationen</div>
+                  <div class="request-list-item">
+                    <div class="req-avatar"></div>
+                    <div class="req-info"><div class="req-name">Ionity A3 Süd</div><div class="req-date">350 kW · CCS</div></div>
+                    <span class="req-badge badge-green">Frei</span>
+                  </div>
+                  <div class="request-list-item">
+                    <div class="req-avatar" style="background:rgba(245,158,11,0.3);"></div>
+                    <div class="req-info"><div class="req-name">EnBW City Ffm</div><div class="req-date">22 kW · Typ 2</div></div>
+                    <span class="req-badge badge-amber">Belegt</span>
+                  </div>
+                  <div class="request-list-item">
+                    <div class="req-avatar" style="background:rgba(99,102,241,0.35);"></div>
+                    <div class="req-info"><div class="req-name">Tesla SC Frankfurt</div><div class="req-date">250 kW · Tesla</div></div>
+                    <span class="req-badge badge-blue">Defekt</span>
+                  </div>
+                </div>
+
+                <!-- Screen 2: Wizard Schritt 2/4 -->
+                <div class="app-screen screen-wizard">
+                  <div class="wizard-steps">
+                    <div class="wstep done"></div>
+                    <div class="wstep active"></div>
+                    <div class="wstep"></div>
+                    <div class="wstep"></div>
+                  </div>
+                  <div class="wizard-title">Stationssuche</div>
+                  <div class="wizard-sub">Filter setzen – Steckertyp &amp; Leistung</div>
+                  <div class="form-field">
+                    <div class="field-label">Steckertyp</div>
+                    <div class="field-value short" style="background:rgba(99,102,241,0.3);"></div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                    <div class="form-field">
+                      <div class="field-label">Min. kW</div>
+                      <div class="field-value"></div>
+                    </div>
+                    <div class="form-field">
+                      <div class="field-label">Radius</div>
+                      <div class="field-value"></div>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <div class="field-label">Netz</div>
+                    <div class="field-value" style="width:80%;"></div>
+                  </div>
+                  <div class="form-field">
+                    <div class="field-label">Verfügbarkeit</div>
+                    <div class="field-value"></div>
+                  </div>
+                  <div class="wizard-btn"><span class="wizard-btn-text">Weiter →</span></div>
+                </div>
+
+                <!-- Screen 3: Kalender -->
+                <div class="app-screen screen-calendar">
+                  <div class="cal-header">
+                    <span class="cal-title">Kalender</span>
+                    <span class="cal-month">April 2026</span>
+                  </div>
+                  <div class="cal-grid">
+                    <div class="cal-day-label">Mo</div><div class="cal-day-label">Di</div><div class="cal-day-label">Mi</div>
+                    <div class="cal-day-label">Do</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div><div class="cal-day-label">So</div>
+                    <div class="cal-day empty">30</div><div class="cal-day">1</div><div class="cal-day">2</div>
+                    <div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day ev-amber">5</div><div class="cal-day ev-amber">6</div>
+                    <div class="cal-day ev-blue">7</div><div class="cal-day ev-blue">8</div><div class="cal-day ev-blue">9</div>
+                    <div class="cal-day ev-blue">10</div><div class="cal-day ev-blue">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+                    <div class="cal-day">14</div><div class="cal-day today-d">15</div><div class="cal-day ev-green">16</div>
+                    <div class="cal-day ev-green">17</div><div class="cal-day ev-green">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+                    <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div>
+                    <div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+                    <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+                    <div class="cal-day empty">1</div><div class="cal-day empty">2</div><div class="cal-day empty">3</div><div class="cal-day empty">4</div>
+                  </div>
+                  <div class="cal-legend">
+                    <div class="legend-item"><div class="leg-dot" style="background:#818cf8;"></div>Route</div>
+                    <div class="legend-item"><div class="leg-dot" style="background:#f59e0b;"></div>Besetzt</div>
+                    <div class="legend-item"><div class="leg-dot" style="background:#10b981;"></div>Frei</div>
+                  </div>
+                </div>
+
+              </div><!-- /iphone-screen -->
+            </div><!-- /iphone-inner -->
+          </div><!-- /iphone-frame -->
+
+          <!-- Floating notification -->
+          <div class="toast-animate flex items-center gap-3 bg-slate-800/90 backdrop-blur border border-white/10 px-4 py-3 rounded-2xl shadow-2xl text-sm text-white" style="max-width:230px;">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-xs" data-de="Ladestation gefunden" data-en="Charging station found">Ladestation gefunden</div>
+              <div class="text-white/40 text-[10px]" data-de="Route wird berechnet …" data-en="Calculating route …">Route wird berechnet …</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRUST BAR ═════════════════════════════════════════════ -->
+  <section style="background:#0c1120;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);" class="py-8 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5 mb-5">
+      <p class="text-center text-white/25 text-xs font-semibold uppercase tracking-widest" data-de="Integriert mit führenden Ladenetzen" data-en="Integrated with leading charging networks">Integriert mit führenden Ladenetzen</p>
+    </div>
+    <div class="relative overflow-hidden">
+      <div class="marquee-track" style="width:max-content;">
+        <!-- Set 1 -->
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#f59e0b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Ionity</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">EnBW mobility+</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Tesla Supercharger</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#818cf8" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Plugsurfing</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#6366f1" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">ABRP – A Better Routeplanner</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);" data-de="DSGVO-konform" data-en="GDPR compliant">DSGVO-konform</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);" data-de="Entwickelt in Deutschland" data-en="Made in Germany">Entwickelt in Deutschland</span>
+        </div>
+        <!-- Set 2 (duplicate for seamless loop) -->
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#f59e0b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Ionity</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">EnBW mobility+</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Tesla Supercharger</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#818cf8" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">Plugsurfing</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#6366f1" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);">ABRP – A Better Routeplanner</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);" data-de="DSGVO-konform" data-en="GDPR compliant">DSGVO-konform</span>
+        </div>
+        <div class="trust-logo">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+          <span style="font-size:.875rem;font-weight:600;color:rgba(255,255,255,0.65);" data-de="Entwickelt in Deutschland" data-en="Made in Germany">Entwickelt in Deutschland</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW IT WORKS ═════════════════════════════════════════ -->
+  <section id="how" class="py-28" style="background:#f8fafc;">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-16 reveal">
+        <div class="section-chip mb-5" data-de="So funktioniert's" data-en="How it works">So funktioniert's</div>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 font-display tracking-tight mb-4" data-de="Drei Schritte. Kein Umweg." data-en="Three steps. No detour.">Drei Schritte. Kein Umweg.</h2>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto" data-de="Von der Standorteingabe bis zur Zielführung – in Sekunden." data-en="From location entry to turn-by-turn navigation – in seconds.">Von der Standorteingabe bis zur Zielführung – in Sekunden.</p>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-0 justify-center">
+        <!-- Step 1 -->
+        <div class="flex-1 flex flex-col items-center text-center px-6 reveal">
+          <div class="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center mb-5 shadow-lg shadow-indigo-200">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black text-sm flex items-center justify-center mb-3">1</div>
+          <h3 class="font-bold text-slate-900 text-xl mb-2" data-de="Standort eingeben" data-en="Enter location">Standort eingeben</h3>
+          <p class="text-slate-500 text-sm leading-relaxed" data-de="Gib dein Ziel ein oder nutze deinen aktuellen Standort, um Ladestationen in der Nähe zu finden." data-en="Enter your destination or use your current location to find nearby charging stations.">Gib dein Ziel ein oder nutze deinen aktuellen Standort, um Ladestationen in der Nähe zu finden.</p>
+        </div>
+
+        <div class="step-connector hidden md:block"></div>
+
+        <!-- Step 2 -->
+        <div class="flex-1 flex flex-col items-center text-center px-6 reveal">
+          <div class="w-16 h-16 rounded-2xl bg-violet-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-200">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 font-black text-sm flex items-center justify-center mb-3">2</div>
+          <h3 class="font-bold text-slate-900 text-xl mb-2" data-de="Ladestation auswählen" data-en="Choose a station">Ladestation auswählen</h3>
+          <p class="text-slate-500 text-sm leading-relaxed" data-de="Durchsuche die Ergebnisse gefiltert nach Verfügbarkeit, Steckertyp und Ladegeschwindigkeit." data-en="Browse results filtered by availability, plug type and charging speed.">Durchsuche die Ergebnisse gefiltert nach Verfügbarkeit, Steckertyp und Ladegeschwindigkeit.</p>
+        </div>
+
+        <div class="step-connector hidden md:block"></div>
+
+        <!-- Step 3 -->
+        <div class="flex-1 flex flex-col items-center text-center px-6 reveal">
+          <div class="w-16 h-16 rounded-2xl bg-emerald-600 flex items-center justify-center mb-5 shadow-lg shadow-emerald-200">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-black text-sm flex items-center justify-center mb-3">3</div>
+          <h3 class="font-bold text-slate-900 text-xl mb-2" data-de="Losfahren!" data-en="Hit the road!">Losfahren!</h3>
+          <p class="text-slate-500 text-sm leading-relaxed" data-de="Erhalte eine direkte Navigation zur gewählten Ladestation – Schritt für Schritt, direkt in der App." data-en="Get turn-by-turn directions to the chosen station, directly in the app.">Erhalte eine direkte Navigation zur gewählten Ladestation – Schritt für Schritt, direkt in der App.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HAUPTFUNKTIONEN (BENTO GRID) ═════════════════════════ -->
+  <section id="features" class="py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-16 reveal">
+        <div class="section-chip mb-5" data-de="Kernfunktionen" data-en="Core features">Kernfunktionen</div>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 font-display tracking-tight mb-4" data-de="Was ladeKompass wirklich kann." data-en="What ladeKompass really does.">Was ladeKompass wirklich kann.</h2>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto" data-de="Echte Funktionen aus der App – keine Marketingversprechen." data-en="Real features from the app – no marketing promises.">Echte Funktionen aus der App – keine Marketingversprechen.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- CARD 1: Echtzeit-Stationssuche (large, 2-col) -->
+        <div class="bento-card lg:col-span-2 p-8 reveal">
+          <div class="flex flex-col h-full">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center mb-5 shadow-lg shadow-indigo-100">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2" data-de="Echtzeit-Stationssuche" data-en="Real-time station search">Echtzeit-Stationssuche</h3>
+            <p class="text-slate-500 mb-6" data-de="Finde Ladestationen in der Nähe auf einer interaktiven Karte – in Echtzeit. Sieh auf einen Blick, welche Stationen frei, besetzt oder defekt sind." data-en="Find nearby EV charging stations on an interactive map in real time. See at a glance which stations are free, busy or out of service.">Finde Ladestationen in der Nähe auf einer interaktiven Karte – in Echtzeit. Sieh auf einen Blick, welche Stationen frei, besetzt oder defekt sind.</p>
+            <!-- Map Mockup -->
+            <div class="mt-auto bg-slate-50 rounded-2xl p-5 border border-slate-100">
+              <div class="relative bg-indigo-950 rounded-xl overflow-hidden" style="height:140px;">
+                <div class="absolute inset-0 opacity-30" style="background: repeating-linear-gradient(0deg, rgba(99,102,241,0.15) 0, rgba(99,102,241,0.15) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(99,102,241,0.15) 0, rgba(99,102,241,0.15) 1px, transparent 1px, transparent 40px);"></div>
+                <div class="absolute top-4 left-6 w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                <div class="absolute top-8 left-20 w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                <div class="absolute top-12 left-32 w-3 h-3 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50"></div>
+                <div class="absolute top-6 right-10 w-3 h-3 rounded-full bg-red-400 shadow-lg shadow-red-400/50"></div>
+                <div class="absolute bottom-6 left-14 w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                <div class="absolute bottom-4 right-16 w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/60 ring-2 ring-white/20"></div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div><span class="text-[11px] font-semibold text-slate-600" data-de="Frei" data-en="Free">Frei</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div><span class="text-[11px] font-semibold text-slate-600" data-de="Besetzt" data-en="Busy">Besetzt</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-red-400"></div><span class="text-[11px] font-semibold text-slate-600" data-de="Defekt" data-en="Out of service">Defekt</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Routenplanung -->
+        <div class="bento-card p-8 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-violet-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-100">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2" data-de="Routenplanung" data-en="Route planning">Routenplanung</h3>
+          <p class="text-slate-500 text-sm mb-5" data-de="Plane optimale Routen mit Ladestopps basierend auf der Reichweite deines Fahrzeugs. ladeKompass wählt die besten Stationen entlang deiner Route." data-en="Plan optimal routes including charging stops based on your vehicle range. ladeKompass selects the best stations along your route.">Plane optimale Routen mit Ladestopps basierend auf der Reichweite deines Fahrzeugs. ladeKompass wählt die besten Stationen entlang deiner Route.</p>
+          <div class="space-y-2.5 mt-auto">
+            <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center shrink-0"><span class="text-[10px] font-bold text-indigo-600">A</span></div>
+              <span class="text-xs font-semibold text-slate-600" data-de="Frankfurt am Main" data-en="Frankfurt am Main">Frankfurt am Main</span>
+              <div class="ml-auto flex items-center gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <span class="text-[10px] font-bold text-emerald-600" data-de="Start" data-en="Start">Start</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 bg-indigo-50 rounded-xl p-3 border border-indigo-200">
+              <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0"><svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+              <span class="text-xs font-semibold text-slate-600">Ionity A3 Süd · 350 kW</span>
+              <div class="ml-auto flex items-center gap-1.5">
+                <span class="text-[10px] font-bold text-indigo-600" data-de="Ladestopp" data-en="Charging stop">Ladestopp</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 border border-slate-200">
+              <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0"><span class="text-[10px] font-bold text-emerald-600">B</span></div>
+              <span class="text-xs font-semibold text-slate-600" data-de="München Zentrum" data-en="Munich Centre">München Zentrum</span>
+              <div class="ml-auto flex items-center gap-1.5">
+                <span class="text-[10px] font-semibold text-slate-400" data-de="Ziel" data-en="Destination">Ziel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Live-Verfügbarkeit -->
+        <div class="bento-card p-8 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center mb-5 shadow-lg shadow-amber-100">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2" data-de="Live-Verfügbarkeit" data-en="Live availability">Live-Verfügbarkeit</h3>
+          <p class="text-slate-500 text-sm mb-5" data-de="Sieh in Echtzeit, welche Ladepunkte frei, besetzt oder außer Betrieb sind. Filtere nach Verfügbarkeit, Steckertyp und Ladegeschwindigkeit." data-en="See in real time which charging points are free, busy or out of service. Filter by availability, plug type and charging speed.">Sieh in Echtzeit, welche Ladepunkte frei, besetzt oder außer Betrieb sind. Filtere nach Verfügbarkeit, Steckertyp und Ladegeschwindigkeit.</p>
+          <div class="mt-auto">
+            <div class="space-y-2">
+              <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
+                <span class="text-xs font-semibold text-slate-700">CCS · 350 kW</span>
+                <span class="ml-auto text-[10px] font-bold text-emerald-600" data-de="Frei" data-en="Free">Frei</span>
+              </div>
+              <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></div>
+                <span class="text-xs font-semibold text-slate-700">Typ 2 · 22 kW</span>
+                <span class="ml-auto text-[10px] font-bold text-amber-600" data-de="Besetzt" data-en="Busy">Besetzt</span>
+              </div>
+              <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0"></div>
+                <span class="text-xs font-semibold text-slate-700">CHAdeMO · 50 kW</span>
+                <span class="ml-auto text-[10px] font-bold text-red-500" data-de="Defekt" data-en="Out of service">Defekt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: Filteroptionen (large, 2-col) -->
+        <div class="bento-card lg:col-span-2 p-8 reveal">
+          <div class="flex flex-col md:flex-row gap-8 h-full">
+            <div class="flex-1">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center mb-5 shadow-lg shadow-emerald-100">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-slate-900 mb-2" data-de="Filteroptionen" data-en="Filter options">Filteroptionen</h3>
+              <p class="text-slate-500 mb-5" data-de="Filtere nach Steckertyp (CCS, CHAdeMO, Typ 2), Ladegeschwindigkeit (kW) und Netzbetreiber. Finde genau die Station, die zu deinem Fahrzeug passt." data-en="Filter by plug type (CCS, CHAdeMO, Type 2), charging speed (kW) and network operator. Find exactly the station that fits your vehicle.">Filtere nach Steckertyp (CCS, CHAdeMO, Typ 2), Ladegeschwindigkeit (kW) und Netzbetreiber. Finde genau die Station, die zu deinem Fahrzeug passt.</p>
+              <div class="flex flex-wrap gap-2">
+                <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-full px-3 py-1.5">
+                  <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span class="text-xs font-semibold text-indigo-700">CCS</span>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span class="text-xs font-semibold text-slate-600">CHAdeMO</span>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span class="text-xs font-semibold text-slate-600">Typ 2</span>
+                </div>
+                <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5">
+                  <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span class="text-xs font-semibold text-emerald-700" data-de="&gt; 100 kW" data-en="&gt; 100 kW">&gt; 100 kW</span>
+                </div>
+              </div>
+            </div>
+            <!-- Filter mockup -->
+            <div class="flex-shrink-0 bg-slate-50 rounded-2xl p-4 border border-slate-100 w-full md:w-56">
+              <div class="text-xs font-bold text-slate-700 mb-3" data-de="Filter aktiv" data-en="Filters active">Filter aktiv</div>
+              <div class="space-y-2">
+                <div class="bg-white rounded-lg p-2.5 border border-slate-200 flex items-center justify-between">
+                  <span class="text-[10px] font-semibold text-slate-600" data-de="Steckertyp" data-en="Plug type">Steckertyp</span>
+                  <span class="text-[10px] font-bold text-indigo-600">CCS</span>
+                </div>
+                <div class="bg-white rounded-lg p-2.5 border border-slate-200 flex items-center justify-between">
+                  <span class="text-[10px] font-semibold text-slate-600" data-de="Min. Leistung" data-en="Min. power">Min. Leistung</span>
+                  <span class="text-[10px] font-bold text-indigo-600">100 kW</span>
+                </div>
+                <div class="bg-white rounded-lg p-2.5 border border-slate-200 flex items-center justify-between">
+                  <span class="text-[10px] font-semibold text-slate-600" data-de="Verfügbarkeit" data-en="Availability">Verfügbarkeit</span>
+                  <span class="text-[10px] font-bold text-emerald-600" data-de="Frei" data-en="Free">Frei</span>
+                </div>
+                <div class="bg-white rounded-lg p-2.5 border border-slate-200 flex items-center justify-between">
+                  <span class="text-[10px] font-semibold text-slate-600" data-de="Netz" data-en="Network">Netz</span>
+                  <span class="text-[10px] font-bold text-indigo-600" data-de="Alle" data-en="All">Alle</span>
+                </div>
+                <div class="mt-2 bg-indigo-600 rounded-lg p-2 text-center">
+                  <span class="text-[10px] font-bold text-white" data-de="8 Stationen gefunden" data-en="8 stations found">8 Stationen gefunden</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ APP SHOWCASE ══════════════════════════════════════════ -->
+  <section id="showcase" style="background:#070b14;" class="py-28 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-12 reveal">
+        <div class="section-chip section-chip-dark mb-5" data-de="Live App-Ansicht" data-en="Live app view">Live App-Ansicht</div>
+        <h2 class="text-4xl md:text-5xl font-black text-white font-display tracking-tight mb-4" data-de="Die echte Oberfläche." data-en="The real interface.">Die echte Oberfläche.</h2>
+        <p class="text-white/45 text-lg max-w-xl mx-auto" data-de="Keine Marketing-Mockups – echte UI-Elemente aus der ladeKompass-Anwendung." data-en="No marketing mockups – real UI elements from the ladeKompass application.">Keine Marketing-Mockups – echte UI-Elemente aus der ladeKompass-Anwendung.</p>
+      </div>
+
+      <!-- Tab buttons -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-6 justify-center reveal">
+        <button class="tab-btn active" data-tab="dashboard" data-de="Karte" data-en="Map">Karte</button>
+        <button class="tab-btn" data-tab="requests" data-de="Stationen" data-en="Stations">Stationen</button>
+        <button class="tab-btn" data-tab="calendar" data-de="Route" data-en="Route">Route</button>
+        <button class="tab-btn" data-tab="admin" data-de="Profil" data-en="Profile">Profil</button>
+      </div>
+
+      <div class="reveal">
+        <!-- TAB: Karte (Map) -->
+        <div id="tab-dashboard" class="tab-panel active">
+          <div class="app-window">
+            <div class="app-window-bar">
+              <div class="win-dot win-dot-red"></div>
+              <div class="win-dot win-dot-yellow"></div>
+              <div class="win-dot win-dot-green"></div>
+              <div class="win-url">ladekompass.app/map</div>
+            </div>
+            <div class="app-window-body">
+              <div class="app-sidebar">
+                <div class="sidebar-logo-row">
+                  <div class="sidebar-logo-icon">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  </div>
+                  <span class="sidebar-logo-text">ladeKompass</span>
+                </div>
+                <div class="sidebar-nav-item active"><div class="nav-dot active"></div><span data-de="Karte" data-en="Map">Karte</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Stationen" data-en="Stations">Stationen</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Route" data-en="Route">Route</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Favoriten" data-en="Favourites">Favoriten</span></div>
+                <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
+                  <div class="sidebar-nav-item" style="font-size:10px;opacity:.6;"><div class="nav-dot"></div>Verlauf</div>
+                  <div class="sidebar-nav-item" style="font-size:10px;opacity:.6;"><div class="nav-dot"></div>Einstellungen</div>
+                  <div class="sidebar-nav-item" style="font-size:10px;opacity:.6;"><div class="nav-dot"></div>Profil</div>
+                </div>
+              </div>
+              <div class="app-content">
+                <div class="content-title" data-de="Karte – In der Nähe 🗺️" data-en="Map – Nearby 🗺️">Karte – In der Nähe 🗺️</div>
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                  <div class="glass-card-dark rounded-xl p-3">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;" data-de="In der Nähe" data-en="Nearby">In der Nähe</div>
+                    <div style="font-size:22px;font-weight:800;color:#f59e0b;font-family:'Outfit',sans-serif;">12</div>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-3">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;" data-de="Frei" data-en="Free">Frei</div>
+                    <div style="font-size:22px;font-weight:800;color:#10b981;font-family:'Outfit',sans-serif;">8</div>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-3">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;" data-de="Favoriten" data-en="Favourites">Favoriten</div>
+                    <div style="font-size:22px;font-weight:800;color:#818cf8;font-family:'Outfit',sans-serif;">5</div>
+                  </div>
+                </div>
+                <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:8px;" data-de="Ladestationen in der Nähe" data-en="Nearby charging stations">Ladestationen in der Nähe</div>
+                <div class="space-y-2">
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-3">
+                    <div style="width:28px;height:28px;border-radius:50%;background:rgba(16,185,129,0.3);flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div style="font-size:11px;font-weight:600;color:#fff;">Ionity A3 Süd</div>
+                      <div style="font-size:9px;color:rgba(255,255,255,0.35);">350 kW · CCS · 1.2 km</div>
+                    </div>
+                    <span class="status-badge badge-approved" data-de="Frei" data-en="Free">Frei</span>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-3">
+                    <div style="width:28px;height:28px;border-radius:50%;background:rgba(245,158,11,0.3);flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div style="font-size:11px;font-weight:600;color:#fff;">EnBW City Ffm</div>
+                      <div style="font-size:9px;color:rgba(255,255,255,0.35);">22 kW · Typ 2 · 2.4 km</div>
+                    </div>
+                    <span class="status-badge badge-pending" data-de="Belegt" data-en="Busy">Belegt</span>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-3">
+                    <div style="width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,0.2);flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div style="font-size:11px;font-weight:600;color:#fff;">Tesla SC Frankfurt</div>
+                      <div style="font-size:9px;color:rgba(255,255,255,0.35);">250 kW · Tesla · 3.1 km</div>
+                    </div>
+                    <span class="status-badge badge-rejected" data-de="Defekt" data-en="Out of service">Defekt</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Stationen -->
+        <div id="tab-requests" class="tab-panel">
+          <div class="app-window">
+            <div class="app-window-bar">
+              <div class="win-dot win-dot-red"></div><div class="win-dot win-dot-yellow"></div><div class="win-dot win-dot-green"></div>
+              <div class="win-url">ladekompass.app/stations</div>
+            </div>
+            <div class="app-window-body">
+              <div class="app-sidebar">
+                <div class="sidebar-logo-row">
+                  <div class="sidebar-logo-icon"><svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                  <span class="sidebar-logo-text">ladeKompass</span>
+                </div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Karte" data-en="Map">Karte</span></div>
+                <div class="sidebar-nav-item active"><div class="nav-dot active"></div><span data-de="Stationen" data-en="Stations">Stationen</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Route" data-en="Route">Route</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Favoriten" data-en="Favourites">Favoriten</span></div>
+              </div>
+              <div class="app-content">
+                <div class="content-title" data-de="Stationen" data-en="Stations">Stationen</div>
+                <div class="flex gap-2 mb-4">
+                  <div style="padding:4px 10px;border-radius:20px;background:#6366f1;color:#fff;font-size:10px;font-weight:700;" data-de="Alle" data-en="All">Alle</div>
+                  <div style="padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);font-size:10px;font-weight:600;" data-de="Frei" data-en="Free">Frei</div>
+                  <div style="padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);font-size:10px;font-weight:600;" data-de="Belegt" data-en="Busy">Belegt</div>
+                  <div style="padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);font-size:10px;font-weight:600;" data-de="Favoriten" data-en="Favourites">Favoriten</div>
+                </div>
+                <div class="space-y-2">
+                  <div class="glass-card-dark rounded-xl p-3 flex items-center gap-3">
+                    <div style="flex:1;"><div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:2px;">Ionity A3 Süd</div><div style="font-size:9px;color:rgba(255,255,255,0.35);">350 kW · CCS · 1.2 km</div></div>
+                    <span class="status-badge badge-approved" data-de="✓ Frei" data-en="✓ Free">✓ Frei</span>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-3 flex items-center gap-3">
+                    <div style="flex:1;"><div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:2px;">EnBW City Ffm</div><div style="font-size:9px;color:rgba(255,255,255,0.35);">22 kW · Typ 2 · 2.4 km</div></div>
+                    <span class="status-badge badge-pending" data-de="⏳ Belegt" data-en="⏳ Busy">⏳ Belegt</span>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-3 flex items-center gap-3">
+                    <div style="flex:1;"><div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:2px;">Tesla SC Frankfurt</div><div style="font-size:9px;color:rgba(255,255,255,0.35);">250 kW · Tesla · 3.1 km</div></div>
+                    <span class="status-badge badge-rejected" data-de="✗ Defekt" data-en="✗ Out of service">✗ Defekt</span>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-3 flex items-center gap-3">
+                    <div style="flex:1;"><div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:2px;">Plugsurfing Hub Ffm</div><div style="font-size:9px;color:rgba(255,255,255,0.35);">50 kW · CHAdeMO · 3.8 km</div></div>
+                    <span class="status-badge badge-approved" data-de="✓ Frei" data-en="✓ Free">✓ Frei</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Route -->
+        <div id="tab-calendar" class="tab-panel">
+          <div class="app-window">
+            <div class="app-window-bar">
+              <div class="win-dot win-dot-red"></div><div class="win-dot win-dot-yellow"></div><div class="win-dot win-dot-green"></div>
+              <div class="win-url">ladekompass.app/route</div>
+            </div>
+            <div class="app-window-body">
+              <div class="app-sidebar">
+                <div class="sidebar-logo-row">
+                  <div class="sidebar-logo-icon"><svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                  <span class="sidebar-logo-text">ladeKompass</span>
+                </div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Karte" data-en="Map">Karte</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Stationen" data-en="Stations">Stationen</span></div>
+                <div class="sidebar-nav-item active"><div class="nav-dot active"></div><span data-de="Route" data-en="Route">Route</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Favoriten" data-en="Favourites">Favoriten</span></div>
+              </div>
+              <div class="app-content">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="content-title mb-0" data-de="Route planen" data-en="Plan route">Route planen</div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-1.5 text-[10px] text-white/50"><div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div><span data-de="Ladestopps" data-en="Charge stops">Ladestopps</span></div>
+                    <div class="flex items-center gap-1.5 text-[10px] text-white/50"><div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div><span data-de="Unterwegs" data-en="En route">Unterwegs</span></div>
+                  </div>
+                </div>
+                <div class="space-y-2 mb-3">
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-2">
+                    <div style="width:20px;height:20px;border-radius:50%;background:rgba(99,102,241,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#818cf8;">A</div>
+                    <div style="flex:1;font-size:10px;color:#fff;font-weight:600;" data-de="Frankfurt am Main" data-en="Frankfurt am Main">Frankfurt am Main</div>
+                    <div style="font-size:9px;color:rgba(255,255,255,0.3);" data-de="Start · 80%" data-en="Start · 80%">Start · 80%</div>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-2" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);">
+                    <div style="width:20px;height:20px;border-radius:8px;background:rgba(99,102,241,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;"><svg style="width:10px;height:10px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                    <div style="flex:1;font-size:10px;color:#818cf8;font-weight:600;">Ionity A9 Ingolstadt Nord</div>
+                    <div style="font-size:9px;color:#818cf8;" data-de="20 min · +48%" data-en="20 min · +48%">20 min · +48%</div>
+                  </div>
+                  <div class="glass-card-dark rounded-xl p-2.5 flex items-center gap-2">
+                    <div style="width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#10b981;">B</div>
+                    <div style="flex:1;font-size:10px;color:#fff;font-weight:600;" data-de="München Zentrum" data-en="Munich Centre">München Zentrum</div>
+                    <div style="font-size:9px;color:rgba(255,255,255,0.3);" data-de="Ankunft · 28%" data-en="Arrival · 28%">Ankunft · 28%</div>
+                  </div>
+                </div>
+                <div class="glass-card-dark rounded-xl p-2.5 flex items-center justify-between">
+                  <div style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:600;" data-de="Gesamtdistanz" data-en="Total distance">Gesamtdistanz</div>
+                  <div style="font-size:11px;color:#fff;font-weight:700;">401 km</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:600;" data-de="Ladezeit" data-en="Charging time">Ladezeit</div>
+                  <div style="font-size:11px;color:#818cf8;font-weight:700;">~20 min</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Profil -->
+        <div id="tab-admin" class="tab-panel">
+          <div class="app-window">
+            <div class="app-window-bar">
+              <div class="win-dot win-dot-red"></div><div class="win-dot win-dot-yellow"></div><div class="win-dot win-dot-green"></div>
+              <div class="win-url">ladekompass.app/profile</div>
+            </div>
+            <div class="app-window-body">
+              <div class="app-sidebar">
+                <div class="sidebar-logo-row">
+                  <div class="sidebar-logo-icon"><svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                  <span class="sidebar-logo-text">ladeKompass</span>
+                </div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Karte" data-en="Map">Karte</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Stationen" data-en="Stations">Stationen</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Route" data-en="Route">Route</span></div>
+                <div class="sidebar-nav-item active" style="color:#f59e0b;background:rgba(245,158,11,0.1);"><div class="nav-dot" style="background:#f59e0b;"></div><span data-de="Profil" data-en="Profile">Profil</span></div>
+                <div class="sidebar-nav-item"><div class="nav-dot"></div><span data-de="Einstellungen" data-en="Settings">Einstellungen</span></div>
+               </div>
+               <div class="app-content">
+                 <div class="content-title" data-de="Profil" data-en="Profile">Profil</div>
+                 <div class="flex items-center gap-2 mb-3 flex-wrap">
+                   <div style="padding:3px 10px;border-radius:20px;background:rgba(245,158,11,0.15);color:#f59e0b;font-size:9px;font-weight:700;border:1px solid rgba(245,158,11,0.2);" data-de="PRO-Nutzer" data-en="PRO user">PRO-Nutzer</div>
+                   <div style="padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);font-size:9px;font-weight:600;" data-de="Fahrzeug hinzufügen" data-en="Add vehicle">+ Fahrzeug hinzufügen</div>
+                 </div>
+                 <div style="font-size:9px;color:rgba(255,255,255,0.3);font-weight:600;display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:6px 8px;text-transform:uppercase;letter-spacing:.05em;">
+                   <div data-de="Fahrzeug" data-en="Vehicle">Fahrzeug</div><div data-de="Steckertyp" data-en="Plug type">Steckertyp</div><div data-de="Reichweite" data-en="Range">Reichweite</div>
+                 </div>
+                 <div class="space-y-1.5">
+                   <div class="glass-card-dark rounded-lg p-2 flex items-center gap-3" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                     <div style="font-size:11px;color:#fff;font-weight:600;">Tesla Model 3</div>
+                     <span class="status-badge badge-approved" style="font-size:8px;" data-de="CCS" data-en="CCS">CCS</span>
+                     <span style="font-size:8px;padding:1px 7px;border-radius:8px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:700;">580 km</span>
+                   </div>
+                   <div class="glass-card-dark rounded-lg p-2" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                     <div style="font-size:11px;color:#fff;font-weight:600;">VW ID.4</div>
+                     <span class="status-badge badge-approved" style="font-size:8px;" data-de="CCS" data-en="CCS">CCS</span>
+                     <span style="font-size:8px;padding:1px 7px;border-radius:8px;background:rgba(99,102,241,0.15);color:#818cf8;font-weight:700;">520 km</span>
+                   </div>
+                   <div class="glass-card-dark rounded-lg p-2" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                     <div style="font-size:11px;color:#fff;font-weight:600;">Hyundai IONIQ 5</div>
+                     <span class="status-badge badge-pending" style="font-size:8px;" data-de="CCS" data-en="CCS">CCS</span>
+                     <span style="font-size:8px;padding:1px 7px;border-radius:8px;background:rgba(99,102,241,0.15);color:#818cf8;font-weight:700;">481 km</span>
+                   </div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ZUSATZFUNKTIONEN ═══════════════════════════════════════ -->
+  <section id="extras" class="py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-14 reveal">
+        <div class="section-chip mb-5" data-de="Weitere Funktionen" data-en="More features">Weitere Funktionen</div>
+        <h2 class="text-4xl font-black text-slate-900 font-display tracking-tight mb-4" data-de="Alles, was ein EV-Fahrer braucht." data-en="Everything an EV driver needs.">Alles, was ein EV-Fahrer braucht.</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="Offline-Karten" data-en="Offline maps">Offline-Karten</h3>
+          <p class="text-slate-500 text-sm" data-de="Lade Karten für deine Region herunter und nutze ladeKompass auch ohne Internetverbindung unterwegs." data-en="Download maps for your region and use ladeKompass even without an internet connection on the road.">Lade Karten für deine Region herunter und nutze ladeKompass auch ohne Internetverbindung unterwegs.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="Mehrere Fahrzeuge" data-en="Multiple vehicles">Mehrere Fahrzeuge</h3>
+          <p class="text-slate-500 text-sm" data-de="Hinterlege mehrere Elektrofahrzeuge mit Reichweite und Steckertyp. ladeKompass zeigt die passenden Stationen für jedes Fahrzeug." data-en="Add multiple EVs with their range and plug type. ladeKompass shows suitable stations for each vehicle.">Hinterlege mehrere Elektrofahrzeuge mit Reichweite und Steckertyp. ladeKompass zeigt die passenden Stationen für jedes Fahrzeug.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="Notifications" data-en="Notifications">Notifications</h3>
+          <p class="text-slate-500 text-sm" data-de="Werde benachrichtigt, sobald eine Lieblingsstation wieder verfügbar ist – per Push-Benachrichtigung." data-en="Get notified when a favourite station becomes available again – via push notification.">Werde benachrichtigt, sobald eine Lieblingsstation wieder verfügbar ist – per Push-Benachrichtigung.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="Nutzerbewertungen" data-en="User ratings">Nutzerbewertungen</h3>
+          <p class="text-slate-500 text-sm" data-de="Lies Bewertungen und Kommentare anderer EV-Fahrer zu Ladestationen – und teile deine eigenen Erfahrungen." data-en="Read ratings and comments from other EV drivers about charging stations – and share your own experiences.">Lies Bewertungen und Kommentare anderer EV-Fahrer zu Ladestationen – und teile deine eigenen Erfahrungen.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="DSGVO &amp; Datenschutz" data-en="GDPR &amp; Privacy">DSGVO &amp; Datenschutz</h3>
+          <p class="text-slate-500 text-sm" data-de="Alle Nutzerdaten von ladeKompass werden ausschließlich auf EU-Servern gespeichert. Kein Tracking, kein Verkauf von Daten. Vollständig DSGVO-konform." data-en="All ladeKompass user data is stored exclusively on EU servers. No tracking, no data selling. Fully GDPR-compliant.">Alle Nutzerdaten von ladeKompass werden ausschließlich auf EU-Servern gespeichert. Kein Tracking, kein Verkauf von Daten. Vollständig DSGVO-konform.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 reveal">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+          <h3 class="font-bold text-slate-900 mb-2" data-de="Plattform-Anbindung" data-en="Platform integration">Plattform-Anbindung</h3>
+          <p class="text-slate-500 text-sm" data-de="ladeKompass ist mit den großen Ladenetzwerken integriert: Ionity, EnBW, Tesla, Plugsurfing, ABRP und mehr – immer aktuelle Daten." data-en="ladeKompass is integrated with major charging networks: Ionity, EnBW, Tesla, Plugsurfing, ABRP and more – always up-to-date data.">ladeKompass ist mit den großen Ladenetzwerken integriert: Ionity, EnBW, Tesla, Plugsurfing, ABRP und mehr – immer aktuelle Daten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REICHWEITE RECHNER ════════════════════════════════════ -->
+  <section id="roi" style="background:#070b14;" class="py-28 relative overflow-hidden">
+    <div class="orb w-96 h-96 bg-indigo-700/20 top-0 right-0"></div>
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-16 reveal">
+        <div class="section-chip section-chip-dark mb-5" data-de="Reichweitenrechner" data-en="Range calculator">Reichweitenrechner</div>
+        <h2 class="text-4xl md:text-5xl font-black text-white font-display tracking-tight mb-4" data-de="Wie weit kommst du noch?" data-en="How far can you still go?">Wie weit kommst du noch?</h2>
+        <p class="text-white/45 text-lg max-w-xl mx-auto" data-de="Berechne, wann du die nächste Ladestation brauchst – basierend auf Akkustand und Verbrauch." data-en="Calculate when you'll need the next charging stop – based on battery level and consumption.">Berechne, wann du die nächste Ladestation brauchst – basierend auf Akkustand und Verbrauch.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Sliders -->
+        <div class="reveal">
+          <div class="space-y-10">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label class="text-sm font-bold uppercase tracking-widest text-indigo-400" data-de="Aktueller Ladestand (%)" data-en="Current battery level (%)">Aktueller Ladestand (%)</label>
+                <span id="employee-count-label" class="text-2xl font-black text-white font-display">50</span>
+              </div>
+              <input type="range" id="employee-slider" min="5" max="100" value="50">
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label class="text-sm font-bold uppercase tracking-widest text-indigo-400" data-de="Verbrauch (kWh/100 km)" data-en="Consumption (kWh/100 km)">Verbrauch (kWh/100 km)</label>
+                <span id="request-count-label" class="text-2xl font-black text-white font-display">18</span>
+              </div>
+              <input type="range" id="request-slider" min="10" max="30" value="18">
+            </div>
+          </div>
+          <!-- Disclaimer -->
+          <div class="mt-8 flex gap-3 p-4 rounded-2xl bg-white/4 border border-white/8">
+            <svg class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-white/35 text-xs leading-relaxed" data-de="Schätzung basierend auf einer Standardakkugröße von 75 kWh. Tatsächliche Werte können je nach Fahrzeug, Fahrweise und Außentemperatur abweichen." data-en="Estimate based on a standard battery size of 75 kWh. Actual values may vary depending on vehicle, driving style, and ambient temperature.">Schätzung basierend auf einer Standardakkugröße von 75 kWh. Tatsächliche Werte können je nach Fahrzeug, Fahrweise und Außentemperatur abweichen.</p>
+          </div>
+        </div>
+        <!-- Result -->
+        <div class="relative reveal">
+          <div class="absolute inset-0 bg-indigo-600/15 blur-3xl rounded-full"></div>
+          <div class="glass-card-dark border border-white/10 p-10 rounded-3xl text-center relative">
+            <div class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-4" data-de="Verbleibende Reichweite" data-en="Remaining range">Verbleibende Reichweite</div>
+            <div id="savings-value" class="text-6xl font-black text-white mb-3 font-display transition-transform">139 km</div>
+            <div class="text-white/40 mb-8 text-sm">≈ <span id="hours-value" class="text-white font-bold">8 Min.</span> <span data-de="zur nächsten Ladestation" data-en="to the nearest charging station">zur nächsten Ladestation</span></div>
+            <a href="#showcase" class="block w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-900/40" data-de="Ladestation finden" data-en="Find charging station">Ladestation finden</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PRICING ════════════════════════════════════════════════ -->
+  <section id="pricing" class="py-28 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="text-center mb-16 reveal">
+        <div class="section-chip mb-5" data-de="Preise" data-en="Pricing">Preise</div>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 font-display tracking-tight mb-4" data-de="Einfach. Transparent. Fair." data-en="Simple. Transparent. Fair.">Einfach. Transparent. Fair.</h2>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto" data-de="Kostenlos starten, upgraden wenn du mehr brauchst." data-en="Start for free, upgrade when you need more.">Kostenlos starten, upgraden wenn du mehr brauchst.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <!-- FREE -->
+        <div class="pricing-card reveal">
+          <div class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3" data-de="FREE" data-en="FREE">FREE</div>
+          <div class="flex items-end gap-1 mb-1">
+            <div class="text-4xl font-black text-slate-900 font-display">0 €</div>
+            <div class="text-slate-400 text-sm mb-1.5" data-de="/ dauerhaft kostenlos" data-en="/ always free">/ dauerhaft kostenlos</div>
+          </div>
+          <div class="text-slate-400 text-sm mb-6" data-de="Für Elektroauto-Fahrer" data-en="For individual EV drivers">Für Elektroauto-Fahrer</div>
+          <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="block w-full text-center border border-slate-200 hover:border-indigo-400 text-slate-700 hover:text-indigo-600 py-3 rounded-xl font-semibold text-sm transition-all mb-6" data-de="Kostenlos starten" data-en="Start free">Kostenlos starten</a>
+          <div class="space-y-1">
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Echtzeit-Karte" data-en="Real-time map">Echtzeit-Karte</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Stationssuche (Basis)" data-en="Basic station search">Stationssuche (Basis)</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Live-Verfügbarkeit" data-en="Live availability">Live-Verfügbarkeit</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="5 Favoriten" data-en="5 favourites">5 Favoriten</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Standard-Support" data-en="Standard support">Standard-Support</span></div>
+            <div class="pf-row"><svg class="cross-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="text-slate-400" data-de="Offline-Karten" data-en="Offline maps">Offline-Karten</span></div>
+            <div class="pf-row"><svg class="cross-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="text-slate-400" data-de="Routenplanung" data-en="Route planning">Routenplanung</span></div>
+            <div class="pf-row"><svg class="cross-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="text-slate-400" data-de="Unbegrenzte Favoriten" data-en="Unlimited favourites">Unbegrenzte Favoriten</span></div>
+            <div class="pf-row"><svg class="cross-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span class="text-slate-400" data-de="Mehrere Fahrzeuge" data-en="Multiple vehicles">Mehrere Fahrzeuge</span></div>
+          </div>
+        </div>
+
+        <!-- PRO (featured) -->
+        <div class="pricing-card featured reveal">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg" data-de="Empfohlen" data-en="Recommended">Empfohlen</div>
+          <div class="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3">PRO</div>
+          <div class="flex items-end gap-1 mb-1">
+            <div class="text-4xl font-black text-slate-900 font-display">2,99 €</div>
+            <div class="text-slate-400 text-sm mb-1.5" data-de="/ Monat" data-en="/ month">/ Monat</div>
+          </div>
+          <div class="text-slate-400 text-sm mb-6" data-de="Alle FREE-Funktionen + mehr" data-en="All FREE features + more">Alle FREE-Funktionen + mehr</div>
+          <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="block w-full text-center bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold text-sm transition-all mb-6 shadow-lg shadow-indigo-100" data-de="PRO testen" data-en="Try PRO">PRO testen</a>
+          <div class="space-y-1">
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Alles aus FREE" data-en="Everything in FREE">Alles aus FREE</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Offline-Karten" data-en="Offline maps">Offline-Karten</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Erweiterte Routenplanung" data-en="Advanced route planning">Erweiterte Routenplanung</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Unbegrenzte Favoriten" data-en="Unlimited favourites">Unbegrenzte Favoriten</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Mehrere Fahrzeuge" data-en="Multiple vehicles">Mehrere Fahrzeuge</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Notifications" data-en="Notifications">Notifications</span></div>
+            <div class="pf-row"><svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span data-de="Prioritäts-Support" data-en="Priority support">Prioritäts-Support</span></div>
+          </div>
+        </div>
+
+        <!-- FLEET -->
+        <div class="innovation-card reveal">
+          <div class="relative z-10">
+            <div class="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-3">FLEET</div>
+            <div class="text-3xl font-black text-white font-display mb-1" data-de="Auf Anfrage" data-en="On request">Auf Anfrage</div>
+            <div class="text-white/40 text-sm mb-6" data-de="Für Flottenmanager und Unternehmen" data-en="For fleet managers and businesses">Für Flottenmanager und Unternehmen</div>
+            <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="block w-full text-center border border-indigo-500/50 hover:border-indigo-400 text-indigo-300 hover:text-white py-3 rounded-xl font-semibold text-sm transition-all mb-6" data-de="Fleet anfragen" data-en="Request Fleet">Fleet anfragen</a>
+            <div class="space-y-1">
+              <div class="pf-row" style="border-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);">
+                <svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span data-de="Alles aus PRO" data-en="Everything in PRO">Alles aus PRO</span>
+              </div>
+              <div class="pf-row" style="border-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);">
+                <svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span data-de="Flottenmanagement" data-en="Fleet management">Flottenmanagement</span>
+              </div>
+              <div class="pf-row" style="border-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);">
+                <svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span data-de="Flotten-Reporting" data-en="Fleet reporting">Flotten-Reporting</span>
+              </div>
+              <div class="pf-row" style="border-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);">
+                <svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span data-de="API-Zugang" data-en="API access">API-Zugang</span>
+              </div>
+              <div class="pf-row" style="border-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);">
+                <svg class="check-ico w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span data-de="Dediziertes Onboarding" data-en="Dedicated onboarding">Dediziertes Onboarding</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ════════════════════════════════════════════════════ -->
+  <section id="faq" class="py-28 bg-white">
+    <div class="max-w-3xl mx-auto px-5">
+      <div class="text-center mb-12 reveal">
+        <div class="section-chip mb-5" data-de="FAQ" data-en="FAQ">FAQ</div>
+        <h2 class="text-4xl font-black text-slate-900 font-display tracking-tight" data-de="Häufige Fragen." data-en="Frequently asked questions.">Häufige Fragen.</h2>
+      </div>
+      <div class="space-y-3 reveal">
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Welche Ladenetze werden unterstützt?" data-en="Which charging networks are supported?">Welche Ladenetze werden unterstützt?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="ladeKompass integriert über 500.000 Ladepunkte von mehr als 100 Netzbetreibern in Deutschland und Europa, darunter Ionity, EnBW, Tesla, Plug'n'Charge und viele mehr." data-en="ladeKompass integrates over 500,000 charging points from more than 100 network operators in Germany and Europe, including Ionity, EnBW, Tesla, Plug'n'Charge and many more.">ladeKompass integriert über 500.000 Ladepunkte von mehr als 100 Netzbetreibern in Deutschland und Europa, darunter Ionity, EnBW, Tesla, Plug'n'Charge und viele mehr.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Wo werden meine Daten gespeichert?" data-en="Where is my data stored?">Wo werden meine Daten gespeichert?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="ladeKompass speichert alle personenbezogenen Daten ausschließlich auf EU-Servern. Die Anwendung ist vollständig DSGVO-konform entwickelt. Deine Standortdaten werden nicht dauerhaft gespeichert oder an Dritte weitergegeben." data-en="ladeKompass stores all personal data exclusively on EU servers. The application is fully GDPR-compliant. Your location data is not permanently stored or shared with third parties.">ladeKompass speichert alle personenbezogenen Daten ausschließlich auf EU-Servern. Die Anwendung ist vollständig DSGVO-konform entwickelt. Deine Standortdaten werden nicht dauerhaft gespeichert oder an Dritte weitergegeben.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Welche Steckertypen werden unterstützt?" data-en="Which plug types are supported?">Welche Steckertypen werden unterstützt?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="ladeKompass unterstützt alle gängigen Steckertypen: CCS (Combined Charging System), CHAdeMO, Typ 2 (AC), Typ 1 (AC) sowie Tesla Supercharger." data-en="ladeKompass supports all common plug types: CCS (Combined Charging System), CHAdeMO, Type 2 (AC), Type 1 (AC) and Tesla Supercharger.">ladeKompass unterstützt alle gängigen Steckertypen: CCS (Combined Charging System), CHAdeMO, Typ 2 (AC), Typ 1 (AC) sowie Tesla Supercharger.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Was unterscheidet FREE von PRO?" data-en="What's the difference between FREE and PRO?">Was unterscheidet FREE von PRO?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="FREE bietet Echtzeit-Karte, Basis-Stationssuche, Live-Verfügbarkeit und bis zu 5 Favoriten – kostenlos und dauerhaft. PRO für 2,99 €/Monat fügt Offline-Karten, erweiterte Routenplanung, unbegrenzte Favoriten, mehrere Fahrzeuge, Notifications und Prioritäts-Support hinzu." data-en="FREE offers real-time map, basic station search, live availability and up to 5 favourites – free forever. PRO for €2.99/month adds offline maps, advanced route planning, unlimited favourites, multiple vehicles, notifications and priority support.">FREE bietet Echtzeit-Karte, Basis-Stationssuche, Live-Verfügbarkeit und bis zu 5 Favoriten – kostenlos und dauerhaft. PRO für 2,99 €/Monat fügt Offline-Karten, erweiterte Routenplanung, unbegrenzte Favoriten, mehrere Fahrzeuge, Notifications und Prioritäts-Support hinzu.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Kann ich das Abo jederzeit kündigen?" data-en="Can I cancel the subscription anytime?">Kann ich das Abo jederzeit kündigen?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="Ja. PRO-Abos können monatlich gekündigt werden – keine Mindestlaufzeit. Nach der Kündigung wird dein Account automatisch auf FREE zurückgestuft." data-en="Yes. PRO subscriptions can be cancelled monthly – no minimum term. After cancellation, your account is automatically downgraded to FREE.">Ja. PRO-Abos können monatlich gekündigt werden – keine Mindestlaufzeit. Nach der Kündigung wird dein Account automatisch auf FREE zurückgestuft.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Wird ladeKompass mobil unterstützt?" data-en="Is ladeKompass supported on mobile?">Wird ladeKompass mobil unterstützt?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="ladeKompass ist als Progressive Web App (PWA) gebaut und auf Desktop, Tablet und Smartphone nutzbar. Native Apps für iOS und Android sind in der Roadmap." data-en="ladeKompass is built as a Progressive Web App (PWA) and usable on desktop, tablet and smartphone. Native apps for iOS and Android are on the roadmap.">ladeKompass ist als Progressive Web App (PWA) gebaut und auf Desktop, Tablet und Smartphone nutzbar. Native Apps für iOS und Android sind in der Roadmap.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" data-de="Was bietet das FLEET-Paket?" data-en="What does the FLEET plan offer?">Was bietet das FLEET-Paket?
+            <svg class="faq-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-answer" data-de="FLEET ist für Unternehmen und Flottenmanager konzipiert. Es beinhaltet alles aus PRO sowie Flottenmanagement für mehrere Fahrzeuge, Flotten-Reporting, API-Zugang und dediziertes Onboarding. Konditionen auf Anfrage." data-en="FLEET is designed for businesses and fleet managers. It includes everything in PRO plus multi-vehicle fleet management, fleet reporting, API access and dedicated onboarding. Pricing on request.">FLEET ist für Unternehmen und Flottenmanager konzipiert. Es beinhaltet alles aus PRO sowie Flottenmanagement für mehrere Fahrzeuge, Flotten-Reporting, API-Zugang und dediziertes Onboarding. Konditionen auf Anfrage.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FINAL CTA ══════════════════════════════════════════════ -->
+  <section style="background:#070b14;" class="py-28 relative overflow-hidden">
+    <div class="orb w-[500px] h-[500px] bg-indigo-700/20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="max-w-4xl mx-auto px-5 text-center relative z-10 reveal">
+      <div class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-5" data-de="Jetzt loslegen" data-en="Get started">Jetzt loslegen</div>
+      <h2 class="text-4xl md:text-6xl font-black text-white font-display tracking-tight mb-6"><span data-de="Bereit für stressfreies EV-Laden?" data-en="Ready for stress-free EV charging?">Bereit für stressfreies EV-Laden?</span></h2>
+      <p class="text-white/45 text-lg mb-10 max-w-xl mx-auto" data-de="Jetzt kostenlos starten – kein Raten, kein Umweg, kein leerer Akku." data-en="Start free now – no guessing, no detour, no empty battery.">Jetzt kostenlos starten – kein Raten, kein Umweg, kein leerer Akku.</p>
+      <div class="flex flex-wrap items-center gap-4 justify-center">
+        <a href="https://app.ladekompass.de" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold text-base transition-all shadow-xl shadow-indigo-900/40 active:scale-95" data-de="App öffnen" data-en="Open app">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span data-de="App öffnen" data-en="Open app">App öffnen</span>
+        </a>
+        <a href="#showcase" class="inline-flex items-center gap-2 border border-white/15 hover:border-white/30 text-white/70 hover:text-white px-8 py-4 rounded-2xl font-bold text-base transition-all" data-de="App ansehen" data-en="See the app">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <span data-de="App ansehen" data-en="See the app">App ansehen</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═════════════════════════════════════════════════ -->
+  <footer style="background:#04070d;border-top:1px solid rgba(255,255,255,0.06);" class="py-16">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <span class="text-lg font-black text-white font-display tracking-tight">ladeKompass</span>
+          </div>
+          <p class="text-white/30 text-sm leading-relaxed mb-5" data-de="Dein smarter Kompass zur nächsten Ladestation. Entwickelt von WAMOCON." data-en="Your smart compass to the nearest charging station. Developed by WAMOCON.">Dein smarter Kompass zur nächsten Ladestation. Entwickelt von WAMOCON.</p>
+          <!-- Germany badge -->
+          <div class="flex items-center gap-2 text-white/25 text-xs font-semibold">
+            <span>🇩🇪</span>
+            <span data-de="Entwickelt in Deutschland" data-en="Made in Germany">Entwickelt in Deutschland</span>
+          </div>
+        </div>
+
+        <!-- Product -->
+        <div>
+          <h4 class="text-white/50 text-xs font-bold uppercase tracking-widest mb-5" data-de="Produkt" data-en="Product">Produkt</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#features" class="text-white/35 hover:text-white transition-colors" data-de="Features" data-en="Features">Features</a></li>
+            <li><a href="#how" class="text-white/35 hover:text-white transition-colors" data-de="Wie es funktioniert" data-en="How it works">Wie es funktioniert</a></li>
+            <li><a href="#roi" class="text-white/35 hover:text-white transition-colors" data-de="Reichweite" data-en="Range">Reichweite</a></li>
+            <li><a href="#pricing" class="text-white/35 hover:text-white transition-colors" data-de="Preise" data-en="Pricing">Preise</a></li>
+            <li><a href="#faq" class="text-white/35 hover:text-white transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Produktfamilie -->
+        <div>
+          <h4 class="text-white/50 text-xs font-bold uppercase tracking-widest mb-5" data-de="WAMOCON Apps" data-en="WAMOCON apps">WAMOCON Apps</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="text-white/55 font-semibold flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>ladeKompass
+              <span class="text-[10px] text-indigo-400/60 font-semibold ml-1" data-de="EV-Ladekompass" data-en="EV charging compass">EV-Ladekompass</span>
+            </li>
+            <li class="text-white/35 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-500"></span>TRACE
+              <span class="text-[10px] text-teal-400/60 font-semibold ml-1" data-de="Zeiterfassung" data-en="Time tracking">Zeiterfassung</span>
+            </li>
+            <li class="text-white/35 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>TeamRadar
+              <span class="text-[10px] text-blue-400/60 font-semibold ml-1" data-de="Verwaltung" data-en="Management">Verwaltung</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Rechtliches -->
+        <div>
+          <h4 class="text-white/50 text-xs font-bold uppercase tracking-widest mb-5" data-de="Rechtliches" data-en="Legal">Rechtliches</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="impressum.html" class="text-white/35 hover:text-white transition-colors" data-de="Impressum" data-en="Imprint">Impressum</a></li>
+            <li><a href="datenschutz.html" class="text-white/35 hover:text-white transition-colors" data-de="Datenschutz" data-en="Privacy policy">Datenschutz</a></li>
+            <li><a href="agb.html" class="text-white/35 hover:text-white transition-colors" data-de="AGB" data-en="Terms">AGB</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-white/6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-white/20 text-xs" data-de="© 2026 ladeKompass. Ein Produkt der WAMOCON GmbH. Alle Rechte vorbehalten." data-en="© 2026 ladeKompass. A product of WAMOCON GmbH. All rights reserved.">© 2026 ladeKompass. Ein Produkt der WAMOCON GmbH. Alle Rechte vorbehalten.</p>
+        <div class="flex items-center gap-2 text-white/15 text-xs">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>
+          <span data-de="Alle Systeme betriebsbereit" data-en="All systems operational">Alle Systeme betriebsbereit</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ KONTAKTFORMULAR MODAL ════════════════════════════════ -->
+  <div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+       class="fixed inset-0 z-[300] flex items-center justify-center p-4"
+       style="display:none; background:rgba(4,7,13,0.82); backdrop-filter:blur(10px);">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg" style="max-height:92vh;overflow-y:auto;">
+
+      <!-- Letterhead Header (WAMOCON-Stil) -->
+      <div class="flex items-start justify-between px-8 pt-7 pb-5 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2.5 mb-1.5">
+            <div class="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <span class="font-black text-slate-900 font-display tracking-tight">ladeKompass</span>
+            <span class="text-slate-300 mx-1">|</span>
+            <span class="text-sm font-bold text-slate-500">WAMOCON GmbH</span>
+          </div>
+          <p class="text-xs text-slate-400 pl-9">Mergenthalerallee 79–81 · 65760 Eschborn</p>
+        </div>
+        <button onclick="closeContactModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-colors shrink-0 mt-0.5" aria-label="Schließen">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="px-8 py-7">
+        <h3 id="modal-title" class="text-xl font-bold text-slate-900 font-display mb-1">Beratung anfragen</h3>
+        <p class="text-slate-400 text-sm mb-7" data-de="ladeKompass PRO, FLEET oder allgemeine Produktanfrage" data-en="ladeKompass PRO, FLEET or general product enquiry">ladeKompass PRO, FLEET oder allgemeine Produktanfrage</p>
+
+        <form id="contact-form" onsubmit="submitContactForm(event)" novalidate class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5" for="cf-name">Name *</label>
+              <input id="cf-name" type="text" required autocomplete="name"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                placeholder="Max Müller">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5" for="cf-email">E-Mail *</label>
+              <input id="cf-email" type="email" required autocomplete="email"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                placeholder="max@unternehmen.de">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5" for="cf-company">Unternehmen</label>
+            <input id="cf-company" type="text" autocomplete="organization"
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              placeholder="Musterfirma GmbH">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5" for="cf-subject">Betreff</label>
+            <select id="cf-subject"
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white">
+              <option value="Demo anfragen">Demo anfragen</option>
+              <option value="Pro-Abonnement">Pro-Abonnement</option>
+              <option value="Fleet-Anfrage">Fleet-Anfrage</option>
+              <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5" for="cf-message">Nachricht *</label>
+            <textarea id="cf-message" required rows="4"
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
+              placeholder="Wie können wir helfen? Fahrzeugtyp, Nutzungsszenario ..."></textarea>
+          </div>
+
+          <div id="cf-error" class="hidden text-sm text-red-500 font-medium">Bitte Name, E-Mail und Nachricht ausfüllen.</div>
+
+          <button type="submit"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-100 active:scale-95 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Anfrage senden
+          </button>
+          <p class="text-center text-xs text-slate-400">Es öffnet sich dein E-Mail-Programm mit der vorausgefüllten Anfrage.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
