@@ -5,8 +5,8 @@
 
 /* ── Root Variables ─────────────────────────────────────────── */
 :root {
-  --color-indigo:      #6366f1;
-  --color-indigo-dark: #4f46e5;
+  --color-primary:     #16a34a;
+  --color-primary-dark: #15803d;
   --color-violet:      #8b5cf6;
   --color-blue:        #2563eb;
   --color-amber:       #f59e0b;
@@ -57,13 +57,13 @@ body {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255,255,255,0.45);
-  box-shadow: 0 8px 32px rgba(99,102,241,0.05);
+  box-shadow: 0 8px 32px rgba(22,163,74,0.05);
   transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
 }
 .glass-card:hover {
-  border-color: rgba(99,102,241,0.2);
+  border-color: rgba(22,163,74,0.2);
   transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(99,102,241,0.1);
+  box-shadow: 0 20px 60px rgba(22,163,74,0.1);
 }
 .glass-card-dark {
   background: rgba(255,255,255,0.04);
@@ -73,19 +73,19 @@ body {
   transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
 }
 .glass-card-dark:hover {
-  border-color: rgba(99,102,241,0.3);
-  background: rgba(99,102,241,0.06);
+  border-color: rgba(22,163,74,0.3);
+  background: rgba(22,163,74,0.06);
 }
 
 /* ── 3. GRADIENT TEXT ─────────────────────────────────────────*/
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #16a34a, #22c55e);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .gradient-text-blue {
-  background: linear-gradient(135deg, #2563eb, #6366f1);
+  background: linear-gradient(135deg, #15803d, #16a34a);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -121,11 +121,11 @@ body {
   -webkit-appearance: none;
   height: 22px; width: 22px;
   border-radius: 50%;
-  background: #6366f1;
+  background: #16a34a;
   border: 2px solid #fff;
   cursor: pointer;
   margin-top: -8px;
-  box-shadow: 0 0 12px rgba(99,102,241,0.5);
+  box-shadow: 0 0 12px rgba(22,163,74,0.5);
   transition: transform 0.15s;
 }
 #roi input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
@@ -137,7 +137,7 @@ body {
 #roi input[type=range]::-moz-range-thumb {
   height: 22px; width: 22px;
   border-radius: 50%;
-  background: #6366f1;
+  background: #16a34a;
   border: 2px solid #fff;
   cursor: pointer;
 }
@@ -239,7 +239,7 @@ body {
 .screen-avatar {
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #16a34a, #22c55e);
 }
 .kpi-grid {
   display: grid;
@@ -269,7 +269,7 @@ body {
 }
 .kpi-amber { color: #f59e0b; }
 .kpi-green { color: #10b981; }
-.kpi-blue  { color: #818cf8; }
+.kpi-blue  { color: #4ade80; }
 
 .request-list-item {
   display: flex;
@@ -283,7 +283,7 @@ body {
 .req-avatar {
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: rgba(99,102,241,0.35);
+  background: rgba(22,163,74,0.35);
   flex-shrink: 0;
 }
 .req-info { flex: 1; }
@@ -299,7 +299,7 @@ body {
 }
 .badge-green  { background: rgba(16,185,129,0.15); color: #10b981; }
 .badge-amber  { background: rgba(245,158,11,0.15);  color: #f59e0b; }
-.badge-blue   { background: rgba(99,102,241,0.15);  color: #818cf8; }
+.badge-blue   { background: rgba(22,163,74,0.15);  color: #4ade80; }
 
 /* ─ Screen 2: Wizard ─ */
 .screen-wizard {
@@ -319,8 +319,8 @@ body {
   border-radius: 2px;
   background: rgba(255,255,255,0.1);
 }
-.wstep.done   { background: #6366f1; }
-.wstep.active { background: #818cf8; }
+.wstep.done   { background: #16a34a; }
+.wstep.active { background: #4ade80; }
 .wizard-title { font-size: 10px; font-weight: 700; color: #fff; }
 .wizard-sub   { font-size: 7px; color: rgba(255,255,255,0.4); margin-top: 1px; }
 .form-field {
@@ -346,7 +346,7 @@ body {
 .field-value.short { width: 45%; }
 .wizard-btn {
   margin-top: 2px;
-  background: #6366f1;
+  background: #16a34a;
   border-radius: 9px;
   height: 30px;
   display: flex;
@@ -385,10 +385,10 @@ body {
   color: rgba(255,255,255,0.45);
   font-weight: 500;
 }
-.cal-day.ev-blue   { background: rgba(99,102,241,0.3); color: #818cf8; font-weight: 700; }
+.cal-day.ev-blue   { background: rgba(22,163,74,0.3); color: #4ade80; font-weight: 700; }
 .cal-day.ev-green  { background: rgba(16,185,129,0.25); color: #10b981; font-weight: 700; }
 .cal-day.ev-amber  { background: rgba(245,158,11,0.2);  color: #f59e0b; font-weight: 700; }
-.cal-day.today-d   { background: #6366f1; color: #fff; font-weight: 800; }
+.cal-day.today-d   { background: #16a34a; color: #fff; font-weight: 800; }
 .cal-day.empty     { opacity: 0.15; }
 .cal-legend { display: flex; gap: 8px; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 3px; font-size: 6px; color: rgba(255,255,255,0.45); }
@@ -405,12 +405,12 @@ body {
 }
 .pricing-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 60px rgba(99,102,241,0.12);
-  border-color: rgba(99,102,241,0.25);
+  box-shadow: 0 24px 60px rgba(22,163,74,0.12);
+  border-color: rgba(22,163,74,0.25);
 }
 .pricing-card.featured {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 1px #6366f1, 0 20px 60px rgba(99,102,241,0.18);
+  border-color: #16a34a;
+  box-shadow: 0 0 0 1px #16a34a, 0 20px 60px rgba(22,163,74,0.18);
 }
 .pf-row {
   display: flex;
@@ -423,7 +423,7 @@ body {
   line-height: 1.4;
 }
 .pf-row:last-child { border-bottom: none; }
-.check-ico { color: #6366f1; flex-shrink: 0; margin-top: 2px; }
+.check-ico { color: #16a34a; flex-shrink: 0; margin-top: 2px; }
 .cross-ico { color: #cbd5e1; flex-shrink: 0; margin-top: 2px; }
 
 /* ── 8. APP SHOWCASE TABS ─────────────────────────────────────*/
@@ -501,7 +501,7 @@ body {
 }
 .sidebar-logo-icon {
   width: 22px; height: 22px;
-  background: #6366f1;
+  background: #16a34a;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -527,8 +527,8 @@ body {
   white-space: nowrap;
 }
 .sidebar-nav-item.active {
-  background: rgba(99,102,241,0.15);
-  color: #818cf8;
+  background: rgba(22,163,74,0.15);
+  color: #4ade80;
   font-weight: 600;
 }
 .sidebar-nav-item:hover:not(.active) {
@@ -536,7 +536,9 @@ body {
   color: rgba(255,255,255,0.65);
 }
 .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
-.nav-dot.active { background: #6366f1; }
+.nav-dot.active { background: #16a34a; }
+.nav-icon { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.45; }
+.sidebar-nav-item.active .nav-icon { opacity: 1; }
 
 .app-content { flex: 1; padding: 18px; overflow: hidden; }
 .content-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 12px; }
@@ -565,8 +567,8 @@ body {
   transition: box-shadow 0.2s, border-color 0.2s;
 }
 .faq-item.open {
-  box-shadow: 0 8px 30px rgba(99,102,241,0.08);
-  border-color: rgba(99,102,241,0.2);
+  box-shadow: 0 8px 30px rgba(22,163,74,0.08);
+  border-color: rgba(22,163,74,0.2);
 }
 .faq-question {
   width: 100%;
@@ -585,13 +587,13 @@ body {
   transition: color 0.2s;
   font-family: 'Inter', sans-serif;
 }
-.faq-question:hover { color: #6366f1; }
+.faq-question:hover { color: #16a34a; }
 .faq-chevron {
   flex-shrink: 0;
   transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
   color: #94a3b8;
 }
-.faq-item.open .faq-chevron { transform: rotate(180deg); color: #6366f1; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); color: #16a34a; }
 .faq-answer {
   max-height: 0;
   overflow: hidden;
@@ -642,7 +644,7 @@ body {
 .step-connector {
   flex: 1;
   height: 2px;
-  background: linear-gradient(to right, rgba(99,102,241,0.35), rgba(168,85,247,0.2));
+  background: linear-gradient(to right, rgba(22,163,74,0.35), rgba(168,85,247,0.2));
   margin-top: -2px;
   flex-shrink: 0;
 }
@@ -660,8 +662,8 @@ body {
 }
 .bento-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 60px rgba(99,102,241,0.1);
-  border-color: rgba(99,102,241,0.2);
+  box-shadow: 0 24px 60px rgba(22,163,74,0.1);
+  border-color: rgba(22,163,74,0.2);
 }
 
 /* ── 15. TRUST BAR ────────────────────────────────────────────*/
@@ -683,9 +685,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(99,102,241,0.08);
-  border: 1px solid rgba(99,102,241,0.15);
-  color: #6366f1;
+  background: rgba(22,163,74,0.08);
+  border: 1px solid rgba(22,163,74,0.15);
+  color: #16a34a;
   border-radius: 30px;
   padding: 5px 16px;
   font-size: 0.7rem;
@@ -724,7 +726,7 @@ body {
 /* ── 19. INNOVATION CARD ──────────────────────────────────────*/
 .innovation-card {
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  border: 1px solid rgba(99,102,241,0.25);
+  border: 1px solid rgba(22,163,74,0.25);
   border-radius: 26px;
   padding: 2rem 1.75rem;
   position: relative;
@@ -736,13 +738,13 @@ body {
   position: absolute;
   top: -60px; right: -60px;
   width: 200px; height: 200px;
-  background: rgba(99,102,241,0.12);
+  background: rgba(22,163,74,0.12);
   border-radius: 50%;
   filter: blur(40px);
 }
 .innovation-card:hover {
-  border-color: rgba(99,102,241,0.45);
-  box-shadow: 0 20px 60px rgba(99,102,241,0.18);
+  border-color: rgba(22,163,74,0.45);
+  box-shadow: 0 20px 60px rgba(22,163,74,0.18);
 }
 
 /* ── 20. MOBILE ───────────────────────────────────────────────*/
@@ -752,3 +754,4 @@ body {
   .app-sidebar { display: none; }
   .tab-btn { padding: 6px 12px; font-size: 0.75rem; }
 }
+
