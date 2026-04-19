@@ -1,5 +1,5 @@
 {
-  "name": "away-landing-page",
+  "name": "ladekompass-landing-page",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,10 +8,27 @@
     "lint": "htmlhint *.html",
     "test:lint": "npm run lint",
     "test:validate": "node tests/validate.js",
-    "test": "npm run test:lint && npm run test:validate",
+    "test:unit": "jest --coverage",
+    "test": "npm run test:lint && npm run test:validate && npm run test:unit",
     "build": "echo 'No build step required for static LP'"
   },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "script.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 100,
+        "functions": 100,
+        "branches": 85,
+        "statements": 99
+      }
+    }
+  },
   "devDependencies": {
-    "htmlhint": "^1.9.2"
+    "htmlhint": "^1.9.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
