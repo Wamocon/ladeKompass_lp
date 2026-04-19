@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   AWAY Landing Page V2 – Interactive Logic
-   DE/EN Toggle | iPhone Screen Cycle | App Tabs | ROI | Reveal
+   ladeKompass Landing Page – Interactive Logic
+   DE/EN Toggle | iPhone Screen Cycle | App Tabs | Range Calc | Reveal
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -98,7 +98,7 @@
     });
   }
 
-  /* ── 4. ROI CALCULATOR ───────────────────────────────────────── */
+  /* ── 4. RANGE CALCULATOR ────────────────────────────────────── */
   function initROICalculator() {
     var empSlider  = $('#employee-slider');
     var reqSlider  = $('#request-slider');
@@ -110,30 +110,31 @@
     if (!empSlider || !reqSlider) return;
 
     function update() {
-      var employees = parseInt(empSlider.value, 10);
-      var requests  = parseInt(reqSlider.value, 10);
+      var batteryLevel = parseInt(empSlider.value, 10);   // 5–100 %
+      var consumption  = parseInt(reqSlider.value, 10);   // 10–30 kWh/100km
 
-      empLabel.textContent = employees;
-      reqLabel.textContent = requests;
+      empLabel.textContent = batteryLevel;
+      reqLabel.textContent = consumption;
 
       /*
-       * Schätzung: Durchschnittlicher manueller Verwaltungsaufwand pro Urlaubsantrag
-       * (Antrag erstellen, E-Mail, Kalender manuell eintragen, Rückfragen): ~20 Min.
-       * Mit AWAY reduziert auf ~2–3 Min. → Ersparnis ≈ 17 Min. pro Antrag.
-       * Interner Stundensatz Annahme: 50 €/h (inkl. Overhead, marktüblicher Mittelwert DE).
+       * EV range estimate:
+       * Range (km) = (battery_level / 100 * BATTERY_KWH) / consumption * 100
+       * Standard battery assumed: 75 kWh
        */
-      var minutesSaved = employees * requests * 17;
-      var hoursSaved   = minutesSaved / 60;
-      var moneySaved   = hoursSaved * 50;
+      var BATTERY_KWH = 75;
+      var rangekm = Math.round((batteryLevel / 100 * BATTERY_KWH) / consumption * 100);
 
-      var fmt = new Intl.NumberFormat('de-DE', {
-        style: 'currency',
-        currency: 'EUR',
-        maximumFractionDigits: 0
-      });
+      /*
+       * Estimated drive time to nearest charging station.
+       * Germany has ~100 000 charge points — avg. nearest station ~3–15 min.
+       */
+      var estMin = batteryLevel > 70 ? 8
+                 : batteryLevel > 40 ? 6
+                 : batteryLevel > 15 ? 4
+                 : 2;
 
-      savingsVal.textContent = fmt.format(moneySaved);
-      hoursVal.textContent   = Math.round(hoursSaved).toLocaleString('de-DE') + ' Std.';
+      savingsVal.textContent = rangekm + ' km';
+      hoursVal.textContent   = '< ' + estMin + ' Min.';
 
       // Subtle pulse animation
       savingsVal.style.transform = 'scale(1.04)';
@@ -173,6 +174,7 @@
   function initReveal() {
     var els = $$('.reveal');
     if (!els.length) return;
+    if (typeof IntersectionObserver === 'undefined') return;
 
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -277,10 +279,10 @@
     if (errEl) errEl.classList.add('hidden');
 
     var mailSubject = encodeURIComponent(
-      'AWAY Anfrage' + (company.trim() ? ' \u2013 ' + company.trim() : '') + ': ' + subject
+      'ladeKompass Anfrage' + (company.trim() ? ' \u2013 ' + company.trim() : '') + ': ' + subject
     );
     var mailBody = encodeURIComponent(
-      'Beratungsanfrage \u00fcber AWAY Landing Page\n' +
+      'Anfrage \u00fcber ladeKompass Landing Page\n' +
       '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
       'Name:         ' + name.trim() + '\n' +
       'E-Mail:       ' + email.trim() + '\n' +
@@ -295,7 +297,7 @@
   };
 
   /* ── INIT ────────────────────────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', function () {
+  function init() {
     initLangToggle();
     initIphoneScreenCycle();
     initShowcaseTabs();
@@ -305,6 +307,14 @@
     initSmoothScroll();
     initFAQ();
     initMobileMenu();
-  });
+  }
+
+  // Run immediately if DOM is already loaded (defer/bottom-of-body/jsdom),
+  // otherwise wait for DOMContentLoaded.
+  if (document.readyState !== 'loading') {
+    init();
+  } else {
+    document.addEventListener('DOMContentLoaded', init);
+  }
 
 })();

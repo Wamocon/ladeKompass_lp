@@ -1,8 +1,8 @@
-name: CI – Tests & Checks
+name: Validate – HTML Lint & Integrity Checks
 
 on:
   push:
-    branches: [ "**" ]        # every branch, every push
+    branches: [ main ]
   pull_request:
     branches: [ "**" ]
   workflow_dispatch:
@@ -11,9 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  # ── 1. HTML Lint (htmlhint) ─────────────────────────────────────
-  lint:
-    name: HTML Lint
+  html-lint:
+    name: HTML Lint (htmlhint)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,9 +28,8 @@ jobs:
       - name: Run htmlhint
         run: npm run test:lint
 
-  # ── 2. Integrity checks (validate.js) ──────────────────────────
-  validate:
-    name: Integrity checks
+  integrity:
+    name: Integrity Checks (validate.js)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
